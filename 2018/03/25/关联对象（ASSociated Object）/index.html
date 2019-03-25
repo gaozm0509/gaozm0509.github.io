@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  
+  
+  <title>  关联对象（ASSociated Object） |   gzm&#39;s blog </title>
+
+ 
+  
+    <link rel="icon" href="/images/favicon.png">
+  
+
+
+  <link rel="stylesheet" href="/nayo.min.css"> 
+</head>  
+  <body>   
+    
+      <header class="header">
+	
+  <nav class="header-inner">        
+
+    <span class="iconfont icon-menu mobile-toggle"></span>   	
+
+    <div class="header-logo">
+      <a href="/">
+        <img class="header-logo-img" src="/images/logo.png">
+      </a>
+    </div>
+
+    <div class="header-menu">          
+              
+          
+            <a class="header-menu-link" id="header-menu-home" href="/">
+              <i class="iconfont icon-home">  
+            </i></a>     
+          
+                  
+    </div>  
+    
+  </nav>
+</header>
+
+   
+
+      <div class="container">       
+          
+          
+            <div class="container-inner">  
+          
+
+          <article class="post">
+  
+	
+<div class="post-header">
+	<div class="post-header-inner">
+		<p class="post-title">	
+			关联对象（ASSociated Object）
+		</p>
+		<div class="post-info">	
+			<span class="post-info-entry">
+				Mar 25, 2018
+			</span>
+
+			
+			
+				<i class="iconfont icon-words"></i>
+				<span class="post-info-entry">2952
+				</span>
+			
+		</div>
+	</div>
+</div> 
+	
+ 
+
+	  <div class="typo post-content slideDownMin">
+
+		
+
+			
+					<h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><blockquote>
+<p>可以给某个对象关联许多其他对象，这些对象通过“键”来区分。存储对象值得时候，可以指明“存储策略”（storage policy），用以维护相应的“内存管理语义”。</p>
+</blockquote>
+<p>存储策略由objc_AssociationPolicy的枚举定义，以下给出了该枚举的<br>取值与与之相对象的@property</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">OBJC_ASSOCIATION_ASSIGN :        assign</span><br><span class="line">OCIATION_RETAIN_NONATOMIC:       nonatomic, retain</span><br><span class="line">OBJC_ASSOCIATION_COPY_NONATOMIC: nonatomic, copy</span><br><span class="line">OBJC_ASSOCIATION_RETAIN:         retain</span><br><span class="line">OBJC_ASSOCIATION_COPY:           copy</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>关联对象的方法<br>1.关联方法（相当于属性的set方法）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> /**</span><br><span class="line">关联对象，用白话文解释就是 以key为索引把value通过policy的策略关联到object上</span><br><span class="line">@param object 关联的对象</span><br><span class="line">@param key 关联对象的key</span><br><span class="line">@param value 被关联的属性</span><br><span class="line">@param policy 关联策略</span><br><span class="line">*/</span><br><span class="line">void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy)</span><br></pre></td></tr></table></figure>
+<p>2.获取相应的关联对象（相当于属性的get方法）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id objc_getAssociatedObject(id object, const void *key)</span><br></pre></td></tr></table></figure>
+<p>3.移除指定对象的全部关联对象值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void objc_removeAssociatedObjects(id object)</span><br></pre></td></tr></table></figure>
+<h5 id="以上参考自《编写高质量IOS与OS-X代码的52个有效方法》一书的第10条。"><a href="#以上参考自《编写高质量IOS与OS-X代码的52个有效方法》一书的第10条。" class="headerlink" title="以上参考自《编写高质量IOS与OS X代码的52个有效方法》一书的第10条。"></a>以上参考自《编写高质量IOS与OS X代码的52个有效方法》一书的第10条。</h5><hr>
+<h4 id="实现UITextView的Placeholder属性"><a href="#实现UITextView的Placeholder属性" class="headerlink" title="实现UITextView的Placeholder属性"></a>实现UITextView的Placeholder属性</h4><p>1.实现思路</p>
+<blockquote>
+<p>为UITextView的类别添加Placeholder属性，在使用时调用set方法的过程中为UItextLabel addsubview一个UILabel对象，通过UITextVIew的代理方法来设置加到UITextVIew上的UIlabel对象的hidden属性。</p>
+</blockquote>
+<p>2.具体实现<br>设置两个实类变量 ，前者在头文件，后者在实现文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@interface UITextView (Placeholder)</span><br><span class="line">@property (nonatomic, copy) NSString *placeholder;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface UITextView (PlaceholderLabel)&lt;UITextViewDelegate&gt;</span><br><span class="line">@property (nonatomic, strong) UILabel *placeholderLabel;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>自己实现两者的get、set方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">- (UILabel *)placeholderLabel&#123;</span><br><span class="line">    return objc_getAssociatedObject(self, kPlaceholderLabelKey);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setPlaceholderLabel:(UILabel *)placeholderLabel&#123;</span><br><span class="line">    objc_setAssociatedObject(self, kPlaceholderLabelKey, placeholderLabel, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSString *)placeholder&#123;</span><br><span class="line">    return objc_getAssociatedObject(self, kPlaceholderKey);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setPlaceholder:(NSString *)placeholder&#123;</span><br><span class="line">    objc_setAssociatedObject(self, kPlaceholderKey, placeholder, OBJC_ASSOCIATION_COPY_NONATOMIC);</span><br><span class="line"></span><br><span class="line">    UILabel *label = [[UILabel alloc] init];</span><br><span class="line">    label.text = placeholder;</span><br><span class="line">    label.textColor = [UIColor grayColor];</span><br><span class="line">    label.font = self.font;</span><br><span class="line">    label.numberOfLines = 0;</span><br><span class="line">    label.lineBreakMode = NSLineBreakByWordWrapping;</span><br><span class="line">    [label sizeToFit];</span><br><span class="line">    label.frame = CGRectMake(5, 6, label.frame.size.width, label.frame.size.height);</span><br><span class="line"></span><br><span class="line">    [self addSubview:label];</span><br><span class="line"></span><br><span class="line">    self.placeholderLabel = label;</span><br><span class="line"></span><br><span class="line">    self.delegate = self;</span><br></pre></td></tr></table></figure>
+<p>}<br>调用时首先会调用[self setPlaceholderLabel:UILabel ]方法，此时把placeholder对象与self对象关联，目的是为了在通过get方法获取的时候能取到placeholder的值；然后通过addSubview方法添加self.placeholderLabel到self；最后实现self的UITextViewDelegate，即当在UITextView中输入的时候回触发其代理，具体如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (void)textViewDidChange:(UITextView *)textView&#123;</span><br><span class="line">        self.placeholderLabel.hidden = YES;</span><br><span class="line">        if (self.text.length == 0) &#123;</span><br><span class="line">            self.placeholderLabel.hidden = NO;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>3.使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (UITextView *)textView&#123;</span><br><span class="line">        if (!_textView) &#123;</span><br><span class="line">            _textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 50, 200, 200)];</span><br><span class="line">            _textView.font = [UIFont systemFontOfSize:50];</span><br><span class="line">            _textView.textColor = [UIColor blueColor];</span><br><span class="line">            _textView.layer.borderWidth = 0.5;</span><br><span class="line">            _textView.layer.borderColor = [UIColor blackColor].CGColor;</span><br><span class="line">            _textView.placeholder = @&quot;wode&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">        return _textView;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>效果<br>输入文字之前</p>
+<p>Paste_Image.png</p>
+<p>输入文字之后</p>
+<p>Paste_Image.png</p>
+<p>ps 使用时，placeholder属性的设置一定要放到最后，具体原因看代码。</p>
+<p>代码地址<a href="https://github.com/gaozm0509/UITextViewPlaceholder">https://github.com/gaozm0509/UITextViewPlaceholder</a></p>
+  	
+					
+	  </div>     
+	  
+
+	<div class="post-footer">
+
+
+  <div class="post-footer-other">
+    
+      <span class="post-footer-item">
+        
+
+
+<span class="donate-btn">
+	<span class="iconfont icon-donate"></span>
+</span>
+
+<div id="donate-box" class="sildeUpMin">
+
+	<span class="donate-cancel iconfont icon-cancel"></span>
+
+	<div class="donate-img-box">
+		<img id="donate-qr-wechat" class="noLazyLoad donate-img" src="/images/donate1.jpg" alt="No Donate Image!">	
+		<img id="donate-qr-alipay" class="noLazyLoad donate-img" src="/images/donate2.png" alt="No Donate Image!">	
+	</div>
+
+	<span class="donate-word">晚饭加鸡腿</span>
+
+	<div class="donate-list">
+		<span class="iconfont icon-donate-wechat"></span>
+		<span class="iconfont icon-donate-alipay"></span>
+	</div>
+
+</div>
+ 
+      </span>        
+       
+    
+      <span class="post-footer-item">
+        <span class="share-btn">
+	<span class="iconfont icon-share"></span>
+</span>
+<div class="-mob-share sildeUpMin">
+	<ul class="-mob-inner">
+	   			             
+        <li class="iconfont 
+		icon-share-qq 
+		-mob-share-qq 
+		-mob-share-link"></li>		
+   	   			             
+        <li class="iconfont 
+		icon-share-weixin 
+		-mob-share-weixin 
+		-mob-share-link"></li>		
+   	   			             
+        <li class="iconfont 
+		icon-share-weibo 
+		-mob-share-weibo 
+		-mob-share-link"></li>		
+   	   			             
+        <li class="iconfont 
+		icon-share-douban 
+		-mob-share-douban 
+		-mob-share-link"></li>		
+   	   			             
+        <li class="iconfont 
+		icon-share-facebook 
+		-mob-share-facebook 
+		-mob-share-link"></li>		
+   	   			             
+        <li class="iconfont 
+		icon-share-twitter 
+		-mob-share-twitter 
+		-mob-share-link"></li>		
+   	   			             
+        <li class="iconfont 
+		icon-share-google 
+		-mob-share-google 
+		-mob-share-link"></li>		
+   	   
+	</ul>
+</div>	
+
+
+<script id="-mob-share" src="https://f1.webshare.mob.com/code/mob-share.js?appkey=21d601593a1de"></script>
+      </span>  
+               
+  </div>  
+    
+
+
+  <div class="post-footer-meta">
+        	
+
+        
+          <i class="iconfont icon-tag"></i>     
+            <a class="tag-link" href="/tags/IOS/">IOS</a>    
+        	
+  </div>
+
+</div>
+
+ 
+	
+	
+</article>
+
+          </div> 
+      </div>            
+    
+    <a id="page-backTop">
+      <span>
+        <i class="iconfont icon-backtotop"></i>
+      </span>
+    </a> 
+
+  
+    
+     <div class="mobile-menu">      
+
+      
+      <img class="mobile-menu-icon" src="/images/favicon.png">  
+      
+
+         
+            
+
+            <a class="mobile-menu-link" href="/">Home
+            </a>
+            
+         
+      
+</div>
+        
+    
+
+
+
+     
+    
+
+
+
+
+<footer id="footer">	    
+
+		
+		<div class="footer-copyright">
+		&copy;
+				
+		2018-
+		
+		2019		
+	
+		Lemon
+		<br>
+
+		Theme  <a href="https://github.com/Lemonreds/hexo-theme-Nayo" target="_blank">Nayo</a>
+		</div>			
+	 
+</footer>   
+
+    <script src="/nayo.bundle.js"></script>           
+  </body>        
+</html>
